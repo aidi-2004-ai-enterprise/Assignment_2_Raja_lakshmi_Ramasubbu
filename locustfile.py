@@ -1,18 +1,20 @@
 from locust import HttpUser, task, between
-import json
 
-class PredictUser(HttpUser):
-    wait_time = between(1, 2)
+class PenguinPredictorUser(HttpUser):
+    wait_time = between(1, 5)  # Simulates a user waiting between 1-5 seconds between requests
 
     @task
-    def predict(self):
-        payload = {
-            "bill_length_mm": 39.1,
-            "bill_depth_mm": 18.7,
-            "flipper_length_mm": 181.0,
-            "body_mass_g": 3750.0,
-            "island": "Torgersen",
-            "sex": "male"
-        }
-        headers = {"Content-Type": "application/json"}
-        self.client.post("/predict", data=json.dumps(payload), headers=headers)
+    def predict_species(self):
+        self.client.post(
+            "/predict",
+            json={
+                "island": "Torgersen",
+                "bill_length_mm": 39.1,
+                "bill_depth_mm": 18.7,
+                "flipper_length_mm": 181,
+                "body_mass_g": 3750,
+                "sex": "male",
+                "year": 2007
+            },
+            headers={"Content-Type": "application/json"}
+        )
